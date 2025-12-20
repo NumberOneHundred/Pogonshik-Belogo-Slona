@@ -13,28 +13,17 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 function renderPage(num) {
   pageRendering = true;
   pdfDoc.getPage(num).then(function(page) {
-    // Получаем размер контейнера
-    const container = document.querySelector('.pdf-canvas-wrapper');
-    const containerWidth = container.offsetWidth - 40;
-    const containerHeight = container.clientHeight - 40;
+    // Фиксированный масштаб для хорошего качества и удобного размера
+    const scale = 1.5;
     
-    // Считаем масштаб чтобы PDF влез ЦЕЛИКОМ
-    const pageViewport = page.getViewport({scale: 1});
-    const scaleWidth = containerWidth / pageViewport.width;
-    const scaleHeight = containerHeight / pageViewport.height;
-    let baseScale = Math.min(scaleWidth, scaleHeight) * 0.95;
+    const viewport = page.getViewport({scale: scale});
     
-    // Увеличиваем для качества
-    const renderScale = baseScale * 3;
-    
-    const viewport = page.getViewport({scale: renderScale});
-    
-    // Устанавливаем ФИЗИЧЕСКИЙ размер canvas
+    // Для retina дисплеев увеличиваем физический размер
     const pixelRatio = window.devicePixelRatio || 1;
     canvas.width = viewport.width * pixelRatio;
     canvas.height = viewport.height * pixelRatio;
     
-    // Устанавливаем ОТОБРАЖАЕМЫЙ размер (НЕ через CSS!)
+    // Отображаемый размер = нормальный
     canvas.style.width = viewport.width + 'px';
     canvas.style.height = viewport.height + 'px';
     
