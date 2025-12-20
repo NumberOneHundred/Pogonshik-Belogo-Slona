@@ -3,53 +3,31 @@ let pdfDoc = null;
 let pageNum = 1;
 let pageRendering = false;
 let pageNumPending = null;
-let scale = 1.5;
 let canvas = document.getElementById('pdf-canvas');
 let ctx = canvas.getContext('2d');
 
-// URL PDF файла берём из data-атрибута
 const pdfUrl = canvas.getAttribute('data-pdf-url');
 
-// Загружаем PDF.js из CDN
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-/**
- * Рендерит страницу
- */
 function renderPage(num) {
   pageRendering = true;
   pdfDoc.getPage(num).then(function(page) {
-    // Получаем размер страницы PDF
-    const viewport = page.getViewport({scale: 1});
+    // Рендерим PDF в БОЛЬШОМ размере для качества и скролла
+    const scale = 3; // Фиксированный большой масштаб
     
-    // Получаем размер контейнера
-    const container = document.querySelector('.pdf-canvas-wrapper');
-    const containerWidth = container.offsetWidth - 20;
-    const containerHeight = window.innerHeight * 0.65;
+    const viewport = page.getViewport({scale: scale});
     
-    // Считаем масштаб чтобы PDF влез целиком
-    const scaleWidth = containerWidth / viewport.width;
-    const scaleHeight = containerHeight / viewport.height;
-    const displayScale = Math.min(scaleWidth, scaleHeight);
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
     
-    // Увеличиваем масштаб для retina дисплеев (высокое качество)
-    const pixelRatio = window.devicePixelRatio || 1;
-    const renderScale = displayScale * 4; // Минимум 2x для качества
-    
-    const scaledViewport = page.getViewport({scale: renderScale});
-    
-    // Устанавливаем реальный размер canvas (большой для качества)
-    canvas.height = scaledViewport.height;
-    canvas.width = scaledViewport.width;
-    
-    // Устанавливаем отображаемый размер через CSS (меньше, чтобы влез)
-    const displayViewport = page.getViewport({scale: displayScale});
-    canvas.style.width = displayViewport.width + 'px';
-    canvas.style.height = displayViewport.height + 'px';
+    // НЕ меняем размер через CSS - оставляем большим
+    canvas.style.width = viewport.width + 'px';
+    canvas.style.height = viewport.height + 'px';
 
     const renderContext = {
       canvasContext: ctx,
-      viewport: scaledViewport
+      viewport: viewport
     };
     
     const renderTask = page.render(renderContext);
@@ -63,13 +41,9 @@ function renderPage(num) {
     });
   });
 
-  // Обновляем номер страницы
   document.getElementById('page-num').textContent = num;
 }
 
-/**
- * Если другая страница уже рендерится, откладываем
- */
 function queueRenderPage(num) {
   if (pageRendering) {
     pageNumPending = num;
@@ -78,9 +52,6 @@ function queueRenderPage(num) {
   }
 }
 
-/**
- * Предыдущая страница
- */
 function onPrevPage() {
   if (pageNum <= 1) {
     return;
@@ -90,9 +61,6 @@ function onPrevPage() {
 }
 document.getElementById('prev-page').addEventListener('click', onPrevPage);
 
-/**
- * Следующая страница
- */
 function onNextPage() {
   if (pageNum >= pdfDoc.numPages) {
     return;
@@ -102,21 +70,15 @@ function onNextPage() {
 }
 document.getElementById('next-page').addEventListener('click', onNextPage);
 
-/**
- * Загружаем PDF
- */
 pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
   pdfDoc = pdfDoc_;
   document.getElementById('page-count').textContent = pdfDoc.numPages;
-
-  // Рендерим первую страницу
   renderPage(pageNum);
 }).catch(function(error) {
   console.error('Ошибка загрузки PDF:', error);
   document.querySelector('.pdf-fallback').style.display = 'block';
 });
 
-// Перерендериваем при изменении размера окна
 let resizeTimeout;
 window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
