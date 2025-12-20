@@ -22,9 +22,8 @@ function renderPage(num) {
     const isMobile = window.innerWidth < 768;
     
     // На мобильных: фиксированный scale для читаемости
-    // На десктопе: подгоняем под ширину экрана
     if (isMobile) {
-      scale = 2.5; // Увеличенный масштаб для мобильных
+      scale = 2.5;
     } else {
       const viewport = page.getViewport({scale: 1});
       const containerWidth = document.querySelector('.pdf-container').offsetWidth - 40;
@@ -50,8 +49,6 @@ function renderPage(num) {
       }
     });
   });
-document.getElementById('page-num').textContent = num;
-}
 
   // Обновляем номер страницы
   document.getElementById('page-num').textContent = num;
@@ -101,6 +98,9 @@ pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
 
   // Рендерим первую страницу
   renderPage(pageNum);
+}).catch(function(error) {
+  console.error('Ошибка загрузки PDF:', error);
+  document.querySelector('.pdf-fallback').style.display = 'block';
 });
 
 // Перерендериваем при изменении размера окна
