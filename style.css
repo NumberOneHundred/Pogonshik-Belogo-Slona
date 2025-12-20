@@ -484,21 +484,4 @@ body {
     color: #ff00ff;
     font-weight: bold;
 }
-
-/* Фикс для iOS Safari */
-@supports (-webkit-touch-callout: none) {
-    .pdf-container {
-        padding: 10px;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-  .pdf-canvas-wrapper {
-    text-align: center;
-    background: #ffffff;
-    min-height: 50vh;
-    max-height: 60vh;
-    display: block;
-    overflow: scroll;
-    -webkit-overflow-scrolling: touch;
-}
 }
