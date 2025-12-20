@@ -257,6 +257,7 @@ body {
 .disketa-card.available:hover .disketa-label {
     color: #ffffff;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    animation: glitch 500ms infinite;
 }
 
 .soon {
