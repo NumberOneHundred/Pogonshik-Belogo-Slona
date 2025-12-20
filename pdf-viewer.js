@@ -50,8 +50,7 @@ function renderPage(num) {
       }
     });
   });
-
-  document.getElementById('page-num').textContent = num;
+document.getElementById('page-num').textContent = num;
 }
 
   // Обновляем номер страницы
