@@ -26,7 +26,7 @@ function renderPage(num) {
     
     // Умножаем на pixelRatio для чёткости на retina
     const pixelRatio = window.devicePixelRatio || 1;
-    const outputScale = scale * Math.max(4, pixelRatio);
+    const outputScale = scale * 6;
     
     const viewport = page.getViewport({scale: outputScale});
     
