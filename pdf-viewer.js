@@ -93,11 +93,16 @@ pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
   document.querySelector('.pdf-fallback').style.display = 'block';
 });
 
+// Отключаем перерисовку при зуме (Safari)
+let lastWidth = window.innerWidth;
 let resizeTimeout;
 window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(function() {
-    if (pdfDoc) {
+    // Перерисовываем только если реально изменилась ширина (поворот экрана)
+    // НЕ перерисовываем при зуме (когда пользователь пинчит)
+    if (pdfDoc && Math.abs(window.innerWidth - lastWidth) > 50) {
+      lastWidth = window.innerWidth;
       renderPage(pageNum);
     }
   }, 300);
