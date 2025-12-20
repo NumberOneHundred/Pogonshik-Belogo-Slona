@@ -487,3 +487,16 @@ body {
     color: #ff00ff;
     font-weight: bold;
 }
+
+/* Фикс для iOS Safari */
+@supports (-webkit-touch-callout: none) {
+    .pdf-container {
+        padding: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .pdf-canvas-wrapper {
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
+    }
+}
