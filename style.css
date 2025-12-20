@@ -299,30 +299,33 @@ body {
     transform: translateY(-2px);
 }
 
-/* PDF просмотрщик на страницах дискет */
+/* PDF просмотрщик на страницах дискет - ИСПРАВЛЕНО */
 .pdf-container {
     margin: 40px 0;
     border: 3px solid #00ffff;
     box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
     background: #ffffff;
     padding: 10px;
+    width: 100%;
+    max-width: 100%;
 }
 
 .pdf-canvas-wrapper {
     text-align: center;
     background: #ffffff;
-    min-height: 60vh;
-    max-height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 20px;
+    overflow: visible;
+    padding: 10px;
+    width: 100%;
 }
+
 #pdf-canvas {
     display: block;
     margin: 0 auto;
+    max-width: 100%;
+    height: auto !important;
 }
 
 .pdf-controls {
@@ -441,8 +444,12 @@ body {
         width: 100%;
     }
     
-    .pdf-viewer iframe {
-        height: 600px;
+    .pdf-canvas-wrapper {
+        padding: 5px;
+    }
+    
+    #pdf-canvas {
+        width: 100% !important;
     }
 }
 
@@ -458,6 +465,10 @@ body {
     
     .disketa-label {
         font-size: 0.75em;
+    }
+    
+    .pdf-container {
+        padding: 5px;
     }
 }
 
@@ -485,5 +496,4 @@ body {
     font-size: 1.1em;
     color: #ff00ff;
     font-weight: bold;
-}
 }

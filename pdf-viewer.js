@@ -1,11 +1,10 @@
-// Простой PDF viewer на PDF.js для всех устройств
+// Улучшенный PDF viewer на PDF.js для всех устройств
 let pdfDoc = null;
 let pageNum = 1;
 let pageRendering = false;
 let pageNumPending = null;
 let canvas = document.getElementById('pdf-canvas');
 let ctx = canvas.getContext('2d');
-
 const pdfUrl = canvas.getAttribute('data-pdf-url');
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -13,37 +12,47 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 function renderPage(num) {
   pageRendering = true;
   pdfDoc.getPage(num).then(function(page) {
-    // Получаем реальную ширину контейнера
+    // Получаем размер контейнера
     const wrapper = document.querySelector('.pdf-canvas-wrapper');
-    const maxWidth = wrapper.clientWidth - 60;
-    const maxHeight = window.innerHeight * 0.65;
+    const container = document.querySelector('.pdf-container');
     
-    // Считаем какой scale нужен чтобы влезть
-    const pageViewport = page.getViewport({scale: 1});
-    const scaleX = maxWidth / pageViewport.width;
-    const scaleY = maxHeight / pageViewport.height;
-    const scale = Math.min(scaleX, scaleY);
+    // Доступная ширина с учётом padding и border
+    const containerPadding = 30; // 10px padding + 3px border с каждой стороны
+    const wrapperPadding = 20; // padding wrapper
+    const maxWidth = Math.min(
+      wrapper.clientWidth - wrapperPadding,
+      container.clientWidth - containerPadding,
+      window.innerWidth - 40 // Защита от переполнения экрана
+    );
     
-    // Рендерим с увеличенным качеством
-    const renderScale = scale * 3;
+    // Получаем оригинальный размер страницы
+    const viewport = page.getViewport({scale: 1});
+    
+    // Считаем scale чтобы влезло по ширине
+    const scale = maxWidth / viewport.width;
+    
+    // Для высокого качества на retina дисплеях
+    const outputScale = window.devicePixelRatio || 1;
+    const renderScale = scale * outputScale;
+    
+    // Финальный viewport для рендеринга
     const renderViewport = page.getViewport({scale: renderScale});
     
-    // Физический размер canvas (большой для качества)
+    // Устанавливаем физический размер canvas (большой для качества)
     canvas.width = renderViewport.width;
     canvas.height = renderViewport.height;
     
-    // Отображаемый размер (маленький чтобы влез)
-    const displayViewport = page.getViewport({scale: scale});
-    canvas.style.width = displayViewport.width + 'px';
-    canvas.style.height = displayViewport.height + 'px';
-
+    // Устанавливаем отображаемый размер (масштабированный)
+    canvas.style.width = Math.floor(viewport.width * scale) + 'px';
+    canvas.style.height = Math.floor(viewport.height * scale) + 'px';
+    
     const renderContext = {
       canvasContext: ctx,
-      viewport: renderViewport
+      viewport: renderViewport,
+      transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null
     };
     
     const renderTask = page.render(renderContext);
-
     renderTask.promise.then(function() {
       pageRendering = false;
       if (pageNumPending !== null) {
@@ -52,7 +61,7 @@ function renderPage(num) {
       }
     });
   });
-
+  
   document.getElementById('page-num').textContent = num;
 }
 
@@ -71,6 +80,7 @@ function onPrevPage() {
   pageNum--;
   queueRenderPage(pageNum);
 }
+
 document.getElementById('prev-page').addEventListener('click', onPrevPage);
 
 function onNextPage() {
@@ -80,24 +90,41 @@ function onNextPage() {
   pageNum++;
   queueRenderPage(pageNum);
 }
+
 document.getElementById('next-page').addEventListener('click', onNextPage);
 
+// Загрузка PDF
 pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
   pdfDoc = pdfDoc_;
   document.getElementById('page-count').textContent = pdfDoc.numPages;
+  
+  // Отключаем кнопки если всего одна страница
+  if (pdfDoc.numPages === 1) {
+    document.getElementById('prev-page').disabled = true;
+    document.getElementById('next-page').disabled = true;
+  }
+  
   renderPage(pageNum);
 }).catch(function(error) {
   console.error('Ошибка загрузки PDF:', error);
   document.querySelector('.pdf-fallback').style.display = 'block';
 });
 
-let lastWidth = window.innerWidth;
+// Ре-рендер при изменении размера окна (с debounce)
 let resizeTimeout;
 window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(function() {
-    if (pdfDoc && Math.abs(window.innerWidth - lastWidth) > 50) {
-      lastWidth = window.innerWidth;
+    if (pdfDoc) {
+      renderPage(pageNum);
+    }
+  }, 250);
+});
+
+// Ре-рендер при изменении ориентации на мобильных
+window.addEventListener('orientationchange', function() {
+  setTimeout(function() {
+    if (pdfDoc) {
       renderPage(pageNum);
     }
   }, 300);
