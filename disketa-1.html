@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Дискета 1 — Погонщик белого слона</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
     <div class="scanlines"></div>
@@ -15,13 +16,19 @@
             <div class="glitch" data-text="ДИСКЕТА 1">ДИСКЕТА 1</div>
         </div>
         
-        <div class="pdf-viewer">
-            <!-- Сюда встраивается PDF -->
-            <iframe src="files/disketa-1.pdf" width="100%" height="800px" frameborder="0"></iframe>
-            
-            <!-- Альтернатива: если PDF не показывается, будет ссылка на скачивание -->
+        <div class="pdf-container">
+            <div class="pdf-canvas-wrapper">
+                <canvas id="pdf-canvas" data-pdf-url="files/disketa-1.pdf"></canvas>
+            </div>
+            <div class="pdf-controls">
+                <button id="prev-page">◄ НАЗАД</button>
+                <span class="pdf-page-info">
+                    Страница <span id="page-num"></span> / <span id="page-count"></span>
+                </span>
+                <button id="next-page">ВПЕРЁД ►</button>
+            </div>
             <p class="pdf-fallback">
-                Если PDF не отображается, <a href="files/disketa-1.pdf" download>💾 скачайте дискету 1</a>
+                Если PDF не отображается, <a href="files/disketa-1.pdf" download>скачайте дискету 1</a>
             </p>
         </div>
         
@@ -31,8 +38,18 @@
         </div>
         
         <div class="links">
-            <a href="https://t.me/ВАШ_КАНАЛ" target="_blank" class="link-btn">⚡ ПОДПИСАТЬСЯ В TELEGRAM</a>
+            <a href="https://t.me/ВАШ_КАНАЛ" target="_blank" class="link-btn">ПОДПИСАТЬСЯ В TELEGRAM</a>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-credits">
+                <div>Автор: [ВАШЕ ИМЯ ФАМИЛИЯ]</div>
+                <div>Художник: [ИМЯ ФАМИЛИЯ ХУДОЖНИЦЫ]</div>
+            </div>
+            <div class="age-rating">16+</div>
         </div>
     </div>
+    
+    <script src="pdf-viewer.js"></script>
 </body>
 </html>

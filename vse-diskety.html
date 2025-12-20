@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Все дискеты — Погонщик белого слона</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .diskety-list {
+            margin: 40px 0;
+        }
+        
+        .disketa-item {
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #00ff00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .disketa-item a {
+            color: #00ff00;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        
+        .disketa-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .status-available {
+            color: #00ff00;
+        }
+        
+        .status-soon {
+            color: #666666;
+            font-style: italic;
+        }
+        
+        .disketa-item.unavailable {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>ВСЕ ДИСКЕТЫ</h2>
+        </div>
+        
+        <div class="description">
+            <p>Найдено 18 из 20 дискет</p>
+        </div>
+        
+        <div class="diskety-list">
+            <!-- Доступные дискеты -->
+            <div class="disketa-item">
+                <a href="disketa-1.html">ДИСКЕТА 1</a>
+                <span class="status-available">ДОСТУПНА</span>
+            </div>
+            
+            <div class="disketa-item">
+                <a href="disketa-2.html">ДИСКЕТА 2</a>
+                <span class="status-available">ДОСТУПНА</span>
+            </div>
+            
+            <div class="disketa-item">
+                <a href="disketa-3.html">ДИСКЕТА 3</a>
+                <span class="status-available">ДОСТУПНА</span>
+            </div>
+            
+            <div class="disketa-item">
+                <a href="disketa-4.html">ДИСКЕТА 4</a>
+                <span class="status-available">ДОСТУПНА</span>
+            </div>
+            
+            <div class="disketa-item">
+                <a href="disketa-5.html">ДИСКЕТА 5</a>
+                <span class="status-available">ДОСТУПНА</span>
+            </div>
+            
+            <!-- Пример недоступных дискет -->
+            <div class="disketa-item unavailable">
+                <span>ДИСКЕТА 6</span>
+                <span class="status-soon">СКОРО</span>
+            </div>
+            
+            <div class="disketa-item unavailable">
+                <span>ДИСКЕТА 7</span>
+                <span class="status-soon">СКОРО</span>
+            </div>
+            
+            <!-- Добавь остальные дискеты по этому же принципу -->
+            
+        </div>
+        
+        <div class="navigation">
+            <a href="index.html" class="nav-btn">← НА ГЛАВНУЮ</a>
+        </div>
+    </div>
+</body>
+</html>

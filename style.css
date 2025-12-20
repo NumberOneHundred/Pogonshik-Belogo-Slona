@@ -79,7 +79,6 @@ body {
         0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
     animation: glitch 500ms infinite;
     letter-spacing: 0.1em;
-    user-select: none;
 }
 
 .glitch::before,
@@ -258,7 +257,6 @@ body {
 .disketa-card.available:hover .disketa-label {
     color: #ffffff;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-    animation: glitch 500ms infinite;
 }
 
 .soon {
@@ -278,63 +276,105 @@ body {
 
 .link-btn {
     padding: 15px 40px;
-    font-size: 1.2em;
-    color: #000000;
-    background: linear-gradient(135deg, #00ffff 0%, #ff00ff 100%);
-    border: none;
+    font-size: 1.1em;
+    color: #00ffff;
+    background: transparent;
+    border: 2px solid #00ffff;
     text-decoration: none;
-    font-weight: bold;
-    border-radius: 5px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    font-weight: normal;
+    letter-spacing: 1px;
+    border-radius: 0;
+    box-shadow: none;
     transition: all 0.3s;
     position: relative;
-    overflow: hidden;
-}
-
-.link-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.5s;
-}
-
-.link-btn:hover::before {
-    left: 100%;
+    text-transform: uppercase;
 }
 
 .link-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 
-        0 0 40px rgba(0, 255, 255, 0.8),
-        0 0 60px rgba(255, 0, 255, 0.6);
+    background: #00ffff;
+    color: #000000;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    transform: translateY(-2px);
 }
 
 /* PDF просмотрщик на страницах дискет */
-.pdf-viewer {
+.pdf-container {
     margin: 40px 0;
     border: 3px solid #00ffff;
     box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+    background: #ffffff;
+    padding: 20px;
 }
 
-.pdf-viewer iframe {
+.pdf-canvas-wrapper {
+    text-align: center;
+    background: #ffffff;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#pdf-canvas {
+    max-width: 100%;
+    height: auto;
     display: block;
-    background-color: #ffffff;
+    margin: 0 auto;
+}
+
+.pdf-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    flex-wrap: wrap;
+}
+
+.pdf-controls button {
+    padding: 10px 20px;
+    background: #00ffff;
+    border: none;
+    color: #000000;
+    font-family: 'Courier New', monospace;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+}
+
+.pdf-controls button:hover:not(:disabled) {
+    background: #00ff00;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+}
+
+.pdf-controls button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.pdf-page-info {
+    color: #00ffff;
+    font-size: 1em;
 }
 
 .pdf-fallback {
     text-align: center;
-    padding: 20px;
-    font-size: 1em;
+    padding: 30px;
+    font-size: 1.1em;
     background: rgba(0, 255, 255, 0.1);
 }
 
 .pdf-fallback a {
     color: #00ffff;
     text-decoration: underline;
+    font-weight: bold;
+}
+
+.pdf-fallback a:hover {
+    color: #00ff00;
 }
 
 /* Навигация между дискетами */
@@ -415,4 +455,30 @@ body {
     .disketa-label {
         font-size: 0.75em;
     }
+}
+
+/* Футер с авторами и возрастным цензом */
+.footer {
+    margin-top: 80px;
+    padding: 30px 20px;
+    border-top: 1px solid rgba(0, 255, 255, 0.3);
+    text-align: center;
+    font-size: 0.9em;
+    color: rgba(0, 255, 255, 0.6);
+}
+
+.footer-info {
+    margin-bottom: 15px;
+}
+
+.footer-credits {
+    margin: 10px 0;
+    line-height: 1.8;
+}
+
+.age-rating {
+    margin-top: 20px;
+    font-size: 1.1em;
+    color: #ff00ff;
+    font-weight: bold;
 }
