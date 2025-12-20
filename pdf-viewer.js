@@ -13,8 +13,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 function renderPage(num) {
   pageRendering = true;
   pdfDoc.getPage(num).then(function(page) {
-    // Фиксированный масштаб для хорошего качества и удобного размера
-    const scale = 1.5;
+   // Адаптивный scale под ширину экрана
+const containerWidth = document.querySelector('.pdf-canvas-wrapper').offsetWidth - 60;
+const pageViewport = page.getViewport({scale: 1});
+const scale = containerWidth / pageViewport.width;
     
     const viewport = page.getViewport({scale: scale});
     
