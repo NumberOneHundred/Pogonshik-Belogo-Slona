@@ -13,28 +13,33 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 function renderPage(num) {
   pageRendering = true;
   pdfDoc.getPage(num).then(function(page) {
-   // Адаптивный scale под ширину экрана
-const containerWidth = document.querySelector('.pdf-canvas-wrapper').offsetWidth - 60;
-const pageViewport = page.getViewport({scale: 1});
-const scale = containerWidth / pageViewport.width;
+    // Получаем реальную ширину контейнера
+    const wrapper = document.querySelector('.pdf-canvas-wrapper');
+    const maxWidth = wrapper.clientWidth - 60;
+    const maxHeight = window.innerHeight * 0.65;
     
-    const viewport = page.getViewport({scale: scale});
+    // Считаем какой scale нужен чтобы влезть
+    const pageViewport = page.getViewport({scale: 1});
+    const scaleX = maxWidth / pageViewport.width;
+    const scaleY = maxHeight / pageViewport.height;
+    const scale = Math.min(scaleX, scaleY);
     
-    // Для retina дисплеев увеличиваем физический размер
-    const pixelRatio = window.devicePixelRatio || 1;
-    canvas.width = viewport.width * pixelRatio;
-    canvas.height = viewport.height * pixelRatio;
+    // Рендерим с увеличенным качеством
+    const renderScale = scale * 3;
+    const renderViewport = page.getViewport({scale: renderScale});
     
-    // Отображаемый размер = нормальный
-    canvas.style.width = viewport.width + 'px';
-    canvas.style.height = viewport.height + 'px';
+    // Физический размер canvas (большой для качества)
+    canvas.width = renderViewport.width;
+    canvas.height = renderViewport.height;
     
-    // Масштабируем контекст для retina
-    ctx.scale(pixelRatio, pixelRatio);
+    // Отображаемый размер (маленький чтобы влез)
+    const displayViewport = page.getViewport({scale: scale});
+    canvas.style.width = displayViewport.width + 'px';
+    canvas.style.height = displayViewport.height + 'px';
 
     const renderContext = {
       canvasContext: ctx,
-      viewport: viewport
+      viewport: renderViewport
     };
     
     const renderTask = page.render(renderContext);
