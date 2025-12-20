@@ -16,17 +16,17 @@ function renderPage(num) {
     // Получаем размер контейнера
     const container = document.querySelector('.pdf-canvas-wrapper');
     const containerWidth = container.offsetWidth - 40;
-    const containerHeight = window.innerHeight * 0.6;
+    const containerHeight = window.innerHeight * 0.7;
     
     // Считаем масштаб чтобы PDF влез ЦЕЛИКОМ в окошко
     const pageViewport = page.getViewport({scale: 1});
     const scaleWidth = containerWidth / pageViewport.width;
     const scaleHeight = containerHeight / pageViewport.height;
-    const scale = Math.min(scaleWidth, scaleHeight) * 0.85; // 85% чтобы точно влез
+    const scale = Math.min(scaleWidth, scaleHeight);
     
     // Умножаем на pixelRatio для чёткости на retina
     const pixelRatio = window.devicePixelRatio || 1;
-    const outputScale = scale * Math.max(2.5, pixelRatio); // Минимум 2.5x для качества
+    const outputScale = scale * Math.max(4, pixelRatio);
     
     const viewport = page.getViewport({scale: outputScale});
     
