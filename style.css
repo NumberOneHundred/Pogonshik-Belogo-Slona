@@ -305,7 +305,10 @@ body {
     border: 3px solid #00ffff;
     box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
     background: #ffffff;
-    padding: 20px;
+    padding: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 .pdf-canvas-wrapper {
