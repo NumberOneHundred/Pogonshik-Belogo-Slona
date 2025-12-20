@@ -19,16 +19,18 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 function renderPage(num) {
   pageRendering = true;
   pdfDoc.getPage(num).then(function(page) {
-    const isMobile = window.innerWidth < 768;
+    // Получаем размер страницы PDF
+    const viewport = page.getViewport({scale: 1});
     
-    // На мобильных: фиксированный scale для читаемости
-    if (isMobile) {
-      scale = 2.5;
-    } else {
-      const viewport = page.getViewport({scale: 1});
-      const containerWidth = document.querySelector('.pdf-container').offsetWidth - 40;
-      scale = containerWidth / viewport.width;
-    }
+    // Получаем размер контейнера
+    const container = document.querySelector('.pdf-canvas-wrapper');
+    const containerWidth = container.offsetWidth - 20; // Отступы
+    const containerHeight = window.innerHeight * 0.6; // 60% высоты экрана
+    
+    // Считаем масштаб чтобы PDF влез целиком
+    const scaleWidth = containerWidth / viewport.width;
+    const scaleHeight = containerHeight / viewport.height;
+    scale = Math.min(scaleWidth, scaleHeight); // Берём меньший масштаб
     
     const scaledViewport = page.getViewport({scale: scale});
     canvas.height = scaledViewport.height;
