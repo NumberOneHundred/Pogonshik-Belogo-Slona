@@ -13,33 +13,35 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 function renderPage(num) {
   pageRendering = true;
   pdfDoc.getPage(num).then(function(page) {
-    // Рендерим в ВЫСОКОМ разрешении для качества при зуме
-    const renderScale = 5; // Очень высокое разрешение
-    const renderViewport = page.getViewport({scale: renderScale});
-    
-    // Устанавливаем реальный размер canvas (БОЛЬШОЙ для качества)
-    canvas.height = renderViewport.height;
-    canvas.width = renderViewport.width;
-    
-    // Считаем размер для отображения (МАЛЕНЬКИЙ чтобы влез)
+    // Получаем размер контейнера
     const container = document.querySelector('.pdf-canvas-wrapper');
     const containerWidth = container.offsetWidth - 40;
     const containerHeight = window.innerHeight * 0.6;
     
+    // Считаем масштаб чтобы PDF влез ЦЕЛИКОМ в окошко
     const pageViewport = page.getViewport({scale: 1});
     const scaleWidth = containerWidth / pageViewport.width;
     const scaleHeight = containerHeight / pageViewport.height;
-    const displayScale = Math.min(scaleWidth, scaleHeight) * 0.9; // 90% чтобы точно влез
+    const scale = Math.min(scaleWidth, scaleHeight) * 0.85; // 85% чтобы точно влез
     
-    const displayViewport = page.getViewport({scale: displayScale});
+    // Умножаем на pixelRatio для чёткости на retina
+    const pixelRatio = window.devicePixelRatio || 1;
+    const outputScale = scale * Math.max(2.5, pixelRatio); // Минимум 2.5x для качества
     
-    // Устанавливаем МАЛЕНЬКИЙ размер через CSS
+    const viewport = page.getViewport({scale: outputScale});
+    
+    // Canvas рендерится в БОЛЬШОМ размере
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    
+    // Но отображается МАЛЕНЬКИМ (чтобы влез целиком)
+    const displayViewport = page.getViewport({scale: scale});
     canvas.style.width = displayViewport.width + 'px';
     canvas.style.height = displayViewport.height + 'px';
 
     const renderContext = {
       canvasContext: ctx,
-      viewport: renderViewport
+      viewport: viewport
     };
     
     const renderTask = page.render(renderContext);
