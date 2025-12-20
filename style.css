@@ -306,9 +306,6 @@ body {
     box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
     background: #ffffff;
     padding: 10px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
 }
 
 #pdf-canvas {
@@ -498,7 +495,15 @@ body {
     }
     
     .pdf-canvas-wrapper {
-        width: 100%;
-        -webkit-overflow-scrolling: touch;
-    }
+    text-align: center;
+    background: #ffffff;
+    min-height: 70vh;
+    max-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y pinch-zoom;
+}
 }
