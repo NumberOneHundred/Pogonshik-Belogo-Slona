@@ -16,28 +16,30 @@ function renderPage(num) {
     // Получаем размер контейнера
     const container = document.querySelector('.pdf-canvas-wrapper');
     const containerWidth = container.offsetWidth - 40;
-    const containerHeight = window.innerHeight * 0.7;
+    const containerHeight = container.clientHeight - 40;
     
-    // Считаем масштаб чтобы PDF влез ЦЕЛИКОМ в окошко
+    // Считаем масштаб чтобы PDF влез ЦЕЛИКОМ
     const pageViewport = page.getViewport({scale: 1});
     const scaleWidth = containerWidth / pageViewport.width;
     const scaleHeight = containerHeight / pageViewport.height;
-    const scale = Math.min(scaleWidth, scaleHeight);
+    let baseScale = Math.min(scaleWidth, scaleHeight) * 0.95;
     
-    // Умножаем на pixelRatio для чёткости на retina
+    // Увеличиваем для качества
+    const renderScale = baseScale * 3;
+    
+    const viewport = page.getViewport({scale: renderScale});
+    
+    // Устанавливаем ФИЗИЧЕСКИЙ размер canvas
     const pixelRatio = window.devicePixelRatio || 1;
-    const outputScale = scale * 6;
+    canvas.width = viewport.width * pixelRatio;
+    canvas.height = viewport.height * pixelRatio;
     
-    const viewport = page.getViewport({scale: outputScale});
+    // Устанавливаем ОТОБРАЖАЕМЫЙ размер (НЕ через CSS!)
+    canvas.style.width = viewport.width + 'px';
+    canvas.style.height = viewport.height + 'px';
     
-    // Canvas рендерится в БОЛЬШОМ размере
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
-    
-    // Но отображается МАЛЕНЬКИМ (чтобы влез целиком)
-    const displayViewport = page.getViewport({scale: scale});
-    canvas.style.width = displayViewport.width + 'px';
-    canvas.style.height = displayViewport.height + 'px';
+    // Масштабируем контекст для retina
+    ctx.scale(pixelRatio, pixelRatio);
 
     const renderContext = {
       canvasContext: ctx,
@@ -93,14 +95,11 @@ pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
   document.querySelector('.pdf-fallback').style.display = 'block';
 });
 
-// Отключаем перерисовку при зуме (Safari)
 let lastWidth = window.innerWidth;
 let resizeTimeout;
 window.addEventListener('resize', function() {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(function() {
-    // Перерисовываем только если реально изменилась ширина (поворот экрана)
-    // НЕ перерисовываем при зуме (когда пользователь пинчит)
     if (pdfDoc && Math.abs(window.innerWidth - lastWidth) > 50) {
       lastWidth = window.innerWidth;
       renderPage(pageNum);
