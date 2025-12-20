@@ -21,16 +21,17 @@ function renderPage(num) {
   pdfDoc.getPage(num).then(function(page) {
     // Адаптируем масштаб под ширину экрана
     const viewport = page.getViewport({scale: 1});
-    const containerWidth = document.querySelector('.pdf-container').offsetWidth;
     
-    // На мобильных увеличиваем масштаб для читаемости
+    // Для iOS Safari используем window.innerWidth вместо offsetWidth
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const containerWidth = isIOS 
+      ? window.innerWidth - 80
+      : document.querySelector('.pdf-container').offsetWidth;
+    
     const isMobile = window.innerWidth < 768;
     if (isMobile) {
-      // На мобильных: минимальный scale 1.8 для читаемости
-      // Пользователь сможет скроллить по горизонтали если PDF шире экрана
-      scale = Math.max(1.8, (containerWidth / viewport.width) * 1.2);
+      scale = Math.max(2.0, (containerWidth / viewport.width) * 1.5);
     } else {
-      // На десктопе: подгоняем под ширину контейнера
       scale = containerWidth / viewport.width;
     }
     
