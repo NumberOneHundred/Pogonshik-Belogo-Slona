@@ -308,6 +308,16 @@ body {
     padding: 10px;
 }
 
+.pdf-canvas-wrapper {
+    text-align: center;
+    background: #ffffff;
+    min-height: 50vh;
+    max-height: 70vh;
+    display: block;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
 #pdf-canvas {
     max-width: 100%;
     max-height: 100%;
