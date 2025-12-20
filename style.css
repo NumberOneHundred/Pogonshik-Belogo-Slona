@@ -301,31 +301,30 @@ body {
 
 /* PDF просмотрщик на страницах дискет - ИСПРАВЛЕНО */
 .pdf-container {
-    margin: 40px 0;
+    margin: 40px auto;
     border: 3px solid #00ffff;
     box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
     background: #ffffff;
-    padding: 10px;
-    width: 100%;
-    max-width: 100%;
+    padding: 5px;
+    width: calc(100% - 10px);
+    max-width: 1200px;
 }
 
 .pdf-canvas-wrapper {
-    text-align: center;
     background: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: visible;
-    padding: 10px;
+    display: block;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 5px;
     width: 100%;
+    text-align: center;
 }
 
 #pdf-canvas {
-    display: block;
-    margin: 0 auto;
+    display: inline-block;
     max-width: 100%;
     height: auto !important;
+    vertical-align: middle;
 }
 
 .pdf-controls {
@@ -444,12 +443,22 @@ body {
         width: 100%;
     }
     
-    .pdf-canvas-wrapper {
-        padding: 5px;
+    .pdf-container {
+        margin: 20px auto;
+        padding: 3px;
+        width: calc(100% - 6px);
     }
     
-    #pdf-canvas {
-        width: 100% !important;
+    .pdf-canvas-wrapper {
+        padding: 3px;
+    }
+    
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 20px 10px;
     }
 }
 

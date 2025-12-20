@@ -12,44 +12,51 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 function renderPage(num) {
   pageRendering = true;
   pdfDoc.getPage(num).then(function(page) {
-    // Получаем размер контейнера
-    const wrapper = document.querySelector('.pdf-canvas-wrapper');
-    const container = document.querySelector('.pdf-container');
+    // Получаем viewport страницы в оригинальном размере
+    const originalViewport = page.getViewport({scale: 1});
     
-    // Доступная ширина с учётом padding и border
-    const containerPadding = 30; // 10px padding + 3px border с каждой стороны
-    const wrapperPadding = 20; // padding wrapper
-    const maxWidth = Math.min(
-      wrapper.clientWidth - wrapperPadding,
-      container.clientWidth - containerPadding,
-      window.innerWidth - 40 // Защита от переполнения экрана
-    );
+    // Вычисляем доступную ширину
+    const isMobile = window.innerWidth <= 768;
+    let availableWidth;
     
-    // Получаем оригинальный размер страницы
-    const viewport = page.getViewport({scale: 1});
+    if (isMobile) {
+      // На мобильных: почти вся ширина экрана минус отступы
+      availableWidth = window.innerWidth - 30; // 10px body padding + 6px container border/padding + запас
+    } else {
+      // На десктопе: ширина контейнера
+      const wrapper = document.querySelector('.pdf-canvas-wrapper');
+      const container = document.querySelector('.pdf-container');
+      availableWidth = Math.min(
+        wrapper.clientWidth - 20,
+        container.clientWidth - 20,
+        1200 // максимум
+      );
+    }
     
-    // Считаем scale чтобы влезло по ширине
-    const scale = maxWidth / viewport.width;
+    // Считаем scale чтобы PDF влез по ширине
+    const scale = availableWidth / originalViewport.width;
     
-    // Для высокого качества на retina дисплеях
-    const outputScale = window.devicePixelRatio || 1;
-    const renderScale = scale * outputScale;
+    // Для retina дисплеев рендерим в повышенном качестве
+    const pixelRatio = window.devicePixelRatio || 1;
+    const renderScale = scale * Math.min(pixelRatio, 2); // Ограничиваем 2x для производительности
     
-    // Финальный viewport для рендеринга
+    // Viewport для рендеринга
     const renderViewport = page.getViewport({scale: renderScale});
     
-    // Устанавливаем физический размер canvas (большой для качества)
+    // Устанавливаем реальный размер canvas (высокое разрешение)
     canvas.width = renderViewport.width;
     canvas.height = renderViewport.height;
     
     // Устанавливаем отображаемый размер (масштабированный)
-    canvas.style.width = Math.floor(viewport.width * scale) + 'px';
-    canvas.style.height = Math.floor(viewport.height * scale) + 'px';
+    const displayWidth = Math.floor(originalViewport.width * scale);
+    const displayHeight = Math.floor(originalViewport.height * scale);
+    
+    canvas.style.width = displayWidth + 'px';
+    canvas.style.height = displayHeight + 'px';
     
     const renderContext = {
       canvasContext: ctx,
-      viewport: renderViewport,
-      transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null
+      viewport: renderViewport
     };
     
     const renderTask = page.render(renderContext);
