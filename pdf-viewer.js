@@ -22,7 +22,17 @@ function renderPage(num) {
     // Адаптируем масштаб под ширину экрана
     const viewport = page.getViewport({scale: 1});
     const containerWidth = document.querySelector('.pdf-container').offsetWidth;
-    scale = containerWidth / viewport.width;
+    
+    // На мобильных увеличиваем масштаб для читаемости
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      // На мобильных: минимальный scale 1.8 для читаемости
+      // Пользователь сможет скроллить по горизонтали если PDF шире экрана
+      scale = Math.max(1.8, (containerWidth / viewport.width) * 1.2);
+    } else {
+      // На десктопе: подгоняем под ширину контейнера
+      scale = containerWidth / viewport.width;
+    }
     
     const scaledViewport = page.getViewport({scale: scale});
     canvas.height = scaledViewport.height;
