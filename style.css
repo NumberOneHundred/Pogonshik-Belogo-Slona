@@ -319,8 +319,6 @@ body {
 }
 
 #pdf-canvas {
-    max-width: none;
-    height: auto;
     display: block;
     margin: 0 auto;
 }
@@ -494,16 +492,13 @@ body {
         -webkit-overflow-scrolling: touch;
     }
     
-    .pdf-canvas-wrapper {
+  .pdf-canvas-wrapper {
     text-align: center;
     background: #ffffff;
-    min-height: 70vh;
-    max-height: 80vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 50vh;
+    max-height: 60vh;
+    display: block;
     overflow: scroll;
     -webkit-overflow-scrolling: touch;
-    touch-action: pan-x pan-y pinch-zoom;
 }
 }
