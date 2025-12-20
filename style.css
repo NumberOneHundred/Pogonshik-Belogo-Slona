@@ -311,14 +311,15 @@ body {
 .pdf-canvas-wrapper {
     text-align: center;
     background: #ffffff;
+    min-height: 60vh;
+    max-height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: scroll;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
     padding: 20px;
 }
-
 #pdf-canvas {
     display: block;
     margin: 0 auto;
