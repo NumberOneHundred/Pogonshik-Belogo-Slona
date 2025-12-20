@@ -19,19 +19,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 function renderPage(num) {
   pageRendering = true;
   pdfDoc.getPage(num).then(function(page) {
-    // Адаптируем масштаб под ширину экрана
-    const viewport = page.getViewport({scale: 1});
-    
-    // Для iOS Safari используем window.innerWidth вместо offsetWidth
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const containerWidth = isIOS 
-      ? window.innerWidth - 80
-      : document.querySelector('.pdf-container').offsetWidth;
-    
     const isMobile = window.innerWidth < 768;
+    
+    // На мобильных: фиксированный scale для читаемости
+    // На десктопе: подгоняем под ширину экрана
     if (isMobile) {
-      scale = Math.max(2.0, (containerWidth / viewport.width) * 1.5);
+      scale = 2.5; // Увеличенный масштаб для мобильных
     } else {
+      const viewport = page.getViewport({scale: 1});
+      const containerWidth = document.querySelector('.pdf-container').offsetWidth - 40;
       scale = containerWidth / viewport.width;
     }
     
@@ -54,6 +50,9 @@ function renderPage(num) {
       }
     });
   });
+
+  document.getElementById('page-num').textContent = num;
+}
 
   // Обновляем номер страницы
   document.getElementById('page-num').textContent = num;
