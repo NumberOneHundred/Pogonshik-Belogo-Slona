@@ -25,7 +25,7 @@ function renderPage(num) {
     // Получаем размер контейнера
     const container = document.querySelector('.pdf-canvas-wrapper');
     const containerWidth = container.offsetWidth - 20;
-    const containerHeight = window.innerHeight * 0.75;
+    const containerHeight = window.innerHeight * 0.5;
     
     // Считаем масштаб чтобы PDF влез целиком
     const scaleWidth = containerWidth / viewport.width;
@@ -34,7 +34,7 @@ function renderPage(num) {
     
     // Увеличиваем масштаб для retina дисплеев (высокое качество)
     const pixelRatio = window.devicePixelRatio || 1;
-    const renderScale = displayScale * Math.max(2, pixelRatio); // Минимум 2x для качества
+    const renderScale = displayScale * Math.max(3, pixelRatio); // Минимум 2x для качества
     
     const scaledViewport = page.getViewport({scale: renderScale});
     
