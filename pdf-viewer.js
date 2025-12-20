@@ -13,21 +13,33 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 function renderPage(num) {
   pageRendering = true;
   pdfDoc.getPage(num).then(function(page) {
-    // Рендерим PDF в БОЛЬШОМ размере для качества и скролла
-    const scale = 3; // Фиксированный большой масштаб
+    // Рендерим в ВЫСОКОМ разрешении для качества при зуме
+    const renderScale = 5; // Очень высокое разрешение
+    const renderViewport = page.getViewport({scale: renderScale});
     
-    const viewport = page.getViewport({scale: scale});
+    // Устанавливаем реальный размер canvas (БОЛЬШОЙ для качества)
+    canvas.height = renderViewport.height;
+    canvas.width = renderViewport.width;
     
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
+    // Считаем размер для отображения (МАЛЕНЬКИЙ чтобы влез)
+    const container = document.querySelector('.pdf-canvas-wrapper');
+    const containerWidth = container.offsetWidth - 40;
+    const containerHeight = window.innerHeight * 0.6;
     
-    // НЕ меняем размер через CSS - оставляем большим
-    canvas.style.width = viewport.width + 'px';
-    canvas.style.height = viewport.height + 'px';
+    const pageViewport = page.getViewport({scale: 1});
+    const scaleWidth = containerWidth / pageViewport.width;
+    const scaleHeight = containerHeight / pageViewport.height;
+    const displayScale = Math.min(scaleWidth, scaleHeight) * 0.9; // 90% чтобы точно влез
+    
+    const displayViewport = page.getViewport({scale: displayScale});
+    
+    // Устанавливаем МАЛЕНЬКИЙ размер через CSS
+    canvas.style.width = displayViewport.width + 'px';
+    canvas.style.height = displayViewport.height + 'px';
 
     const renderContext = {
       canvasContext: ctx,
-      viewport: viewport
+      viewport: renderViewport
     };
     
     const renderTask = page.render(renderContext);
