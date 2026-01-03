@@ -7,7 +7,7 @@ let canvas = document.getElementById('pdf-canvas');
 let ctx = canvas.getContext('2d');
 const pdfUrl = canvas.getAttribute('data-pdf-url');
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 function renderPage(num) {
   pageRendering = true;
